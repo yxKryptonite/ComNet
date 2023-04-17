@@ -1,2 +1,2 @@
 # ComNet
-Computer Networks (Honor Track), Spring 2023
+Labs for Computer Networks (Honor Track), Spring 2023
