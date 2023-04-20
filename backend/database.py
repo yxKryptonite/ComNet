@@ -1,23 +1,15 @@
 import pymysql as mysql
 import yaml
-import datetime
-
-class Logger():
-    def __init__(self):
-        pass 
-    
-    def echo(self, msg):
-        print(msg)
-        
-    def log(self, msg):
-        print(f"{datetime.datetime.now()} - {msg}")
+import json
+from server import Server
+from logger import Logger
 
 
-def main(args, logger):
+def create_table(args, logger):
     db = mysql.connect(host=args['host'], user=args['user'], passwd=args['passwd'], db=args['db'])
     logger.log(f"Connected to database {args['db']}")
     cursor = db.cursor()
-    cursor.execute("DROP TABLE IF EXISTS WIFI")
+    cursor.execute(f"DROP TABLE IF EXISTS {args['table']}")
     
     sql = """CREATE TABLE WIFI (
              ID VARCHAR(100) NOT NULL,
@@ -37,7 +29,6 @@ def main(args, logger):
          
     cursor.execute(sql)
     logger.log("Table created")
-    
     db.close()
     
     
@@ -49,4 +40,4 @@ if __name__ == "__main__":
         except yaml.YAMLError as exc:
             logger.echo(exc)
     
-    main(args, logger)
+    create_table(args, logger)
