@@ -1,4 +1,5 @@
 import http
+from http import server
 import json
 import yaml
 from logger import Logger
@@ -11,8 +12,9 @@ with open("../config.yml", 'r') as stream:
     except yaml.YAMLError as exc:
          logger.echo(exc)
     
-database = MySQLDatabase(args, logger)
-database.create_table(inplace=True)
+my_database = MySQLDatabase(args, logger)
+my_database.connect()
+my_database.create_table(inplace=True)
 
 class RequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
@@ -34,6 +36,8 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         
         
     def do_POST(self):
+        print(self.headers)
+        print(self.command)
         req_datas = self.rfile.read(int(self.headers['content-length']))
 
         data = {
@@ -49,9 +53,8 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         
         received_data = req_datas.decode()
         json_data = json.loads(received_data)
-        
-        # TODO: add database here
-        database.insert(json_data)
+
+        my_database.insert(json_data)
         
 
 class SimpleServer(http.server.HTTPServer):

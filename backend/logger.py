@@ -8,4 +8,4 @@ class Logger():
         print(msg)
         
     def log(self, msg):
-        print(f"{datetime.datetime.now()} - {msg}")
+        print(f"[{datetime.datetime.now()}] - {msg}")

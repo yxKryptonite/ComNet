@@ -9,13 +9,7 @@
 
 ## Backend
 
-```bash
-python backend/database.py
-```
+
 
 ## Frontend
 
-```bash
-cd frontend
-pc run
-```
