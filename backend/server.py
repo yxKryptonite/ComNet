@@ -5,11 +5,6 @@ import json
 import yaml
 from logger import Logger
 from database import MySQLDatabase
-from configargparse import argparse
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--mmac", type=str)
-mmac = parser.parse_args().mmac
 
 logger = Logger()
 with open("../config.yml", 'r') as stream:
@@ -54,13 +49,12 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(json.dumps(response).encode('utf-8'))
         
         received_data = req_datas.decode().split("=")[-1]
-        print(received_data)
         json_data = json.loads(received_data)
         id = json_data['id']
         json_data = json_data['data']
         json_data['id'] = id
 
-        my_database.filter_insert(json_data, mmac=mmac)
+        my_database.insert(json_data)
         
 
 class MyServer(http.server.HTTPServer):
