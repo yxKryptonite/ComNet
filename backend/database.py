@@ -37,7 +37,7 @@ class MySQLDatabase():
             
         self.cursor.execute(f"DROP TABLE IF EXISTS {self.args['table']}")
         
-        sql = """CREATE TABLE WIFI (
+        sql = f"""CREATE TABLE {self.args['table']} (
                 ID VARCHAR(100) NOT NULL,
                 MMAC VARCHAR(100) NOT NULL,
                 RATE INT,  
