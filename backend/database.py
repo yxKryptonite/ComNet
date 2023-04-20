@@ -15,6 +15,7 @@ class MySQLDatabase():
         self.logger.log(f"Connected to database {self.args['db']}")
         
     def close(self):
+        self.logger.log(f"Closed connection to database {self.args['db']}")
         self.db.close()
         
     def table_exists(self, table_name):
@@ -53,11 +54,12 @@ class MySQLDatabase():
                 RSSI5 FLOAT )""" # RNG is for RANGE (RANGE is a reserved word)
             
         self.cursor.execute(sql)
-        self.logger.log("Table created")
+        self.logger.log(f"Table {self.args['table']} created")
         
     def insert(self, json_data):
         sql = f"""INSERT INTO {self.args['table']} (ID, MMAC, RATE, TIME, LAT, LON , MAC, RSSI, RNG, RSSI1, RSSI2, RSSI3, RSSI4, RSSI5) \
             VALUES ('{json_data['id']}', '{json_data['mmac']}', {json_data['rate']}, '{json_data['time']}', {json_data['lat']}, {json_data['lon']}, '{json_data['mac']}', {json_data['rssi']}, {json_data['range']}, {json_data['rssi1']}, {json_data['rssi2']}, {json_data['rssi3']}, {json_data['rssi4']}, {json_data['rssi5']});"""
+        self.logger.log(f"Inserting data into {self.args['table']}: {sql}")
         self.cursor.execute(sql)
         self.db.commit()
         # TODO: add utility functions (may support real-time localization)
