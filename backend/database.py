@@ -3,6 +3,7 @@ import yaml
 import json
 from logger import Logger
 import re
+from utils import trilateration, smooth_avg
 
 class MySQLDatabase():
     def __init__(self, args, logger) -> None:
@@ -37,21 +38,22 @@ class MySQLDatabase():
             
         self.cursor.execute(f"DROP TABLE IF EXISTS {self.args['table']}")
         
+        VARCHAR = "VARCHAR(100)"
         sql = f"""CREATE TABLE {self.args['table']} (
-                ID VARCHAR(100) NOT NULL,
-                MMAC VARCHAR(100) NOT NULL,
-                RATE INT,  
-                TIME DATETIME,
-                LAT FLOAT,
-                LON FLOAT,
-                MAC VARCHAR(100),
-                RSSI FLOAT,
-                RNG FLOAT,
-                RSSI1 FLOAT,
-                RSSI2 FLOAT,
-                RSSI3 FLOAT,
-                RSSI4 FLOAT,
-                RSSI5 FLOAT )""" # RNG is for RANGE (RANGE is a reserved word)
+                ID {VARCHAR} NOT NULL,
+                MMAC {VARCHAR} NOT NULL,
+                RATE {VARCHAR},  
+                TIME {VARCHAR},
+                LAT {VARCHAR},
+                LON {VARCHAR},
+                MAC {VARCHAR},
+                RSSI {VARCHAR},
+                RNG {VARCHAR} NOT NULL,
+                RSSI1 {VARCHAR},
+                RSSI2 {VARCHAR},
+                RSSI3 {VARCHAR},
+                RSSI4 {VARCHAR},
+                RSSI5 {VARCHAR} )""" # RNG is for RANGE (RANGE is a reserved word)
             
         self.cursor.execute(sql)
         self.logger.log(f"Table {self.args['table']} created")
@@ -60,11 +62,12 @@ class MySQLDatabase():
         if json_data['mmac'] != mmac:
             return
         sql = f"""INSERT INTO {self.args['table']} (ID, MMAC, RATE, TIME, LAT, LON , MAC, RSSI, RNG, RSSI1, RSSI2, RSSI3, RSSI4, RSSI5) \
-            VALUES ('{json_data['id']}', '{json_data['mmac']}', {json_data['rate']}, '{json_data['time']}', {json_data['lat']}, {json_data['lon']}, '{json_data['mac']}', {json_data['rssi']}, {json_data['range']}, {json_data['rssi1']}, {json_data['rssi2']}, {json_data['rssi3']}, {json_data['rssi4']}, {json_data['rssi5']});"""
+            VALUES ({json_data['id']}, {json_data['mmac']}, {json_data['rate']}, {json_data['time']}, {json_data['lat']}, {json_data['lon']}, {json_data['mac']}, {json_data['rssi']}, {json_data['range']}, {json_data['rssi1']}, {json_data['rssi2']}, {json_data['rssi3']}, {json_data['rssi4']}, {json_data['rssi5']});"""
         self.logger.log(f"Inserting data into {self.args['table']}: {sql}")
         self.cursor.execute(sql)
         self.db.commit()
         # TODO: add utility functions (may support real-time localization)
+        
         
     def query(self, sql):
         self.cursor.execute(sql)

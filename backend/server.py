@@ -53,7 +53,8 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps(response).encode('utf-8'))
         
-        received_data = req_datas.decode()
+        received_data = req_datas.decode().split("=")[-1]
+        print(received_data)
         json_data = json.loads(received_data)
         id = json_data['id']
         json_data = json_data['data']
@@ -62,21 +63,30 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         my_database.filter_insert(json_data, mmac=mmac)
         
 
-class MultiThreadServer(socketserver.TCPServer):
+class MyServer(http.server.HTTPServer):
     def __init__(self, host='localhost', port=8000, HandlerClass=RequestHandler):
         super().__init__((host, port), HandlerClass)
         self.host = host
         self.port = port
         
     def run(self):
+        logger.log(f"Server started at {self.host}:{self.port}")
         self.serve_forever()
+        
+    def kill_self(self):
+        self.server_close()
+        logger.log("Server closed")
 
 
 def main():
-    my_server = MultiThreadServer()
-    my_server.run()
+    my_server = MyServer()
+    try:
+        my_server.run()
+    except KeyboardInterrupt:
+        my_server.kill_self()
+        my_database.close()
 
-#----------------------------------------------------------------------
+#------------------------------ Main Function ---------------------------------
 
 if __name__ == '__main__':
     main()
