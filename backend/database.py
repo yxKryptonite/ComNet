@@ -60,6 +60,7 @@ class MySQLDatabase():
         sql = f"INSERT INTO {self.args['table']} (ID, MMAC, RATE, TIME, LAT, LON , MAC, RSSI, RNG, RSSI1, RSSI2, RSSI3, RSSI4, RSSI5) \
             VALUES ('{json_data['id']}', '{json_data['mmac']}', {json_data['rate']}, '{json_data['time']}', {json_data['lat']}, {json_data['lon']}, '{json_data['mac']}', {json_data['rssi']}, {json_data['range']}, {json_data['rssi1']}, {json_data['rssi2']}, {json_data['rssi3']}, {json_data['rssi4']}, {json_data['rssi5']})"
         self.cursor.execute(sql)
+        # TODO: add utility functions (may support real-time localization)
     
     
 if __name__ == "__main__":

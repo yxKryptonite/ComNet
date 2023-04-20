@@ -1,5 +1,4 @@
 import http
-from http import server
 import json
 import yaml
 from logger import Logger
@@ -13,6 +12,7 @@ with open("../config.yml", 'r') as stream:
          logger.echo(exc)
     
 database = MySQLDatabase(args, logger)
+database.create_table(inplace=True)
 
 class RequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
