@@ -1,16 +1,22 @@
 import http
+import socketserver
 from http import server
 import json
 import yaml
 from logger import Logger
 from database import MySQLDatabase
+from configargparse import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--mmac", type=str)
+mmac = parser.parse_args().mmac
 
 logger = Logger()
 with open("../config.yml", 'r') as stream:
     try:
-         args = yaml.safe_load(stream)
+        args = yaml.safe_load(stream)
     except yaml.YAMLError as exc:
-         logger.echo(exc)
+        logger.echo(exc)
     
 my_database = MySQLDatabase(args, logger)
 my_database.connect()
@@ -18,46 +24,45 @@ my_database.create_table(inplace=True)
 
 class RequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
-        print(self.requestline)
+        logger.echo(self.requestline)
         if self.path != '/hello':
             self.send_error(404, "Page not Found!")
             return
  
-        data = {
-            'result_code': '1',
-            'result_desc': 'Success',
-            'timestamp': '',
-            'data': {'message_id': '25d55ad283aa400af464c76d713c07ad'}
+        response = {
+            'Method': 'GET',
+            'Status': 'Success',
         }
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
         self.end_headers()
-        self.wfile.write(json.dumps(data).encode())
+        self.wfile.write(json.dumps(response).encode())
         
         
     def do_POST(self):
-        print(self.headers)
-        print(self.command)
+        logger.echo(self.headers)
+        logger.echo(self.command)
         req_datas = self.rfile.read(int(self.headers['content-length']))
 
-        data = {
-            'result_code': '2',
-            'result_desc': 'Success',
-            'timestamp': '',
-            'data': {'message_id': '25d55ad283aa400af464c76d713c07ad'}
+        response = {
+            'Method': 'POST',
+            'Status': 'Success',
         }
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
         self.end_headers()
-        self.wfile.write(json.dumps(data).encode('utf-8'))
+        self.wfile.write(json.dumps(response).encode('utf-8'))
         
         received_data = req_datas.decode()
         json_data = json.loads(received_data)
+        id = json_data['id']
+        json_data = json_data['data']
+        json_data['id'] = id
 
-        my_database.insert(json_data)
+        my_database.filter_insert(json_data, mmac=mmac)
         
 
-class SimpleServer(http.server.HTTPServer):
+class MultiThreadServer(socketserver.TCPServer):
     def __init__(self, host='localhost', port=8000, HandlerClass=RequestHandler):
         super().__init__((host, port), HandlerClass)
         self.host = host
@@ -68,7 +73,7 @@ class SimpleServer(http.server.HTTPServer):
 
 
 def main():
-    my_server = SimpleServer()
+    my_server = MultiThreadServer()
     my_server.run()
 
 #----------------------------------------------------------------------

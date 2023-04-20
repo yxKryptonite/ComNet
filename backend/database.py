@@ -55,8 +55,10 @@ class MySQLDatabase():
             
         self.cursor.execute(sql)
         self.logger.log(f"Table {self.args['table']} created")
-        
-    def insert(self, json_data):
+    
+    def filter_insert(self, json_data, mmac):
+        if json_data['mmac'] != mmac:
+            return
         sql = f"""INSERT INTO {self.args['table']} (ID, MMAC, RATE, TIME, LAT, LON , MAC, RSSI, RNG, RSSI1, RSSI2, RSSI3, RSSI4, RSSI5) \
             VALUES ('{json_data['id']}', '{json_data['mmac']}', {json_data['rate']}, '{json_data['time']}', {json_data['lat']}, {json_data['lon']}, '{json_data['mac']}', {json_data['rssi']}, {json_data['range']}, {json_data['rssi1']}, {json_data['rssi2']}, {json_data['rssi3']}, {json_data['rssi4']}, {json_data['rssi5']});"""
         self.logger.log(f"Inserting data into {self.args['table']}: {sql}")

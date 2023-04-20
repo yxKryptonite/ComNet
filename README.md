@@ -9,7 +9,15 @@
 
 ## Backend
 
-
+```bash
+cd backend
+python server.py --mmac <your_mac_address>
+```
 
 ## Frontend
+
+```bash
+cd frontend
+pc run
+```
 
