@@ -44,18 +44,27 @@ class MySQLDatabase():
                 MMAC {VARCHAR} NOT NULL,
                 TIME {VARCHAR} NOT NULL,
                 MAC {VARCHAR} NOT NULL,
-                RNG {VARCHAR} NOT NULL )""" # RNG is for RANGE (RANGE is a reserved word)
+                RNG {VARCHAR} NOT NULL,
+                RSSI {VARCHAR} NOT NULL )""" # RNG is for RANGE (RANGE is a reserved word)
             
         self.cursor.execute(sql)
         self.logger.log(f"Table {self.args['table']} created")
     
-    def insert(self, json_data):
-        sql = f"""INSERT INTO {self.args['table']} (ID, MMAC, TIME, MAC, RNG) \
-            VALUES ('{json_data['id']}', '{json_data['mmac']}', '{json_data['time']}', '{json_data['mac']}', '{json_data['range']}');"""
-        self.logger.log(f"Inserting data into {self.args['table']}: {sql}")
-        self.cursor.execute(sql)
-        self.db.commit()
-        # TODO: add utility functions (may support real-time localization)
+    def insert(self, json_data, mac):
+        id: str = json_data['id']
+        data: list = json_data['data']
+        mmac = json_data['mmac']
+        time = json_data['time']
+        for datum in data:
+            data_mac = datum['mac']
+            if data_mac != mac:
+                continue
+            sql = f"""INSERT INTO {self.args['table']} (ID, MMAC, TIME, MAC, RNG, RSSI) \
+            VALUES ('{id}', '{mmac}', '{time}', '{datum['mac']}', '{datum['range']}', '{datum['rssi']}');"""
+            self.logger.log(f"Inserting data into {self.args['table']}: {sql}")
+            self.cursor.execute(sql)
+            self.db.commit()
+            # TODO: add utility functions (may support real-time localization)
         
         
     def query(self, sql):
