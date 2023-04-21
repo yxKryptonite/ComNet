@@ -11,7 +11,9 @@
 
 ```bash
 cd backend
-python server.py
+python server.py --server_ip <your_server_ip> \
+                 --server_port <your_server_port> \
+                 --mobile_mac <your_mobile_mac>
 ```
 
 ## Frontend

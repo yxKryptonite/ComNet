@@ -17,9 +17,10 @@ my_database.create_table(inplace=False)
         
 
 class MyServer():
-    def __init__(self, host='localhost', port=8000):
+    def __init__(self, host, port, mobile_mac):
         self.host = host
         self.port = port
+        self.mobile_mac = mobile_mac.lower()
         
     def run(self):
         logger.log(f"Server started at {self.host}:{self.port}")
@@ -40,9 +41,8 @@ class MyServer():
                             data += chunk
                             
                         req_datas = data.decode('utf-8').split("=")[-1]
-                        print(req_datas)
                         json_data = json.loads(req_datas)
-                        my_database.insert(json_data, mac="54:f2:94:0f:71:ba")
+                        my_database.insert(json_data, mac=self.mobile_mac)
                         
                 except Exception as e:
                     if e != KeyboardInterrupt:
@@ -56,8 +56,9 @@ class MyServer():
         exit(0)
 
 
-def main():
-    my_server = MyServer(host="192.168.195.45", port=8000)
+def main(cmd_args):
+    my_server = MyServer(host=cmd_args.server_ip, \
+        port=cmd_args.server_port, mobile_mac=cmd_args.mobile_mac)
     try:
         my_server.run()
     except KeyboardInterrupt:
@@ -66,4 +67,13 @@ def main():
 #------------------------------ Main Function ---------------------------------
 
 if __name__ == '__main__':
-    main()
+    from configargparse import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--server_ip", type=str, default="192.168.195.45", \
+        help="Server IP address")
+    parser.add_argument("--server_port", type=int, default=8000, \
+        help="Server port")
+    parser.add_argument("--mobile_mac", type=str, default="54:f2:94:0f:71:ba", \
+        help="Mobile MAC address, which is the target to be localized")
+    cmd_args = parser.parse_args()
+    main(cmd_args)
