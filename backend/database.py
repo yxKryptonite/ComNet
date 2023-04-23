@@ -1,22 +1,20 @@
 import pymysql as mysql
 import yaml
-import json
-from logger import Logger
+import datetime
 import re
-from utils import trilateration, smooth_avg
+from localizer import Localizer
 
 class MySQLDatabase():
-    def __init__(self, args, logger) -> None:
+    def __init__(self, args) -> None:
         self.args = args
-        self.logger = logger
 
     def connect(self):
         self.db = mysql.connect(host=self.args['host'], user=self.args['user'], passwd=self.args['passwd'], db=self.args['db'])
         self.cursor = self.db.cursor()
-        self.logger.log(f"Connected to database {self.args['db']}")
+        self.log(f"Connected to database {self.args['db']}")
         
     def close(self):
-        self.logger.log(f"Closed connection to database {self.args['db']}")
+        self.log(f"Closed connection to database {self.args['db']}")
         self.db.close()
         
     def table_exists(self, table_name):
@@ -33,7 +31,7 @@ class MySQLDatabase():
     def create_table(self, inplace=True):
         if not inplace: # 不重写表
             if self.table_exists(self.args['table']):
-                self.logger.log(f"Table {self.args['table']} already exists")
+                self.log(f"Table {self.args['table']} already exists")
                 return
             
         self.cursor.execute(f"DROP TABLE IF EXISTS {self.args['table']}")
@@ -48,7 +46,7 @@ class MySQLDatabase():
                 RSSI {VARCHAR} NOT NULL )""" # RNG is for RANGE (RANGE is a reserved word)
             
         self.cursor.execute(sql)
-        self.logger.log(f"Table {self.args['table']} created")
+        self.log(f"Table {self.args['table']} created")
     
     def insert(self, json_data, mac):
         id: str = json_data['id']
@@ -61,7 +59,7 @@ class MySQLDatabase():
                 continue
             sql = f"""INSERT INTO {self.args['table']} (ID, MMAC, TIME, MAC, RNG, RSSI) \
             VALUES ('{id}', '{mmac}', '{time}', '{datum['mac']}', '{datum['range']}', '{datum['rssi']}');"""
-            self.logger.log(f"Inserting data into {self.args['table']}: {sql}")
+            self.log(f"Inserting data into {self.args['table']}: {sql}")
             self.cursor.execute(sql)
             self.db.commit()
             # TODO: add utility functions (may support real-time localization)
@@ -74,15 +72,21 @@ class MySQLDatabase():
     def execute(self, sql):
         self.cursor.execute(sql)
         self.db.commit()
+        
+    def echo(self, msg):
+        print(msg)
+        
+    def log(self, msg):
+        print(f"[{datetime.datetime.now()}] - {msg}")
     
-    
+
+# test  
 if __name__ == "__main__":
-    logger = Logger()
     with open("../config.yml", 'r') as stream:
         try:
             args = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
-            logger.echo(exc)
+            print(exc)
     
-    database = MySQLDatabase(args, logger)
+    database = MySQLDatabase(args)
     database.create_table()
