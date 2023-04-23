@@ -5,9 +5,20 @@ echo "# Path: config.yml
 # It is used to store the password and other sensitive information.
 # It is not tracked by git, so you can safely edit it.
 
+# The following is the database information.
 host: localhost
 user: root
 passwd: 
 db: ComNet
 table: WIFI
-" > config.yml
+
+# The following is your server IP, server port and the MAC of your mobile phone to be localized.
+server_ip: 
+server_port: 
+mobile_mac: 
+
+# The following is the mMACs of the 3 WIFI detector.
+mmacs: 
+  - 
+  - 
+  - " > config.yml
