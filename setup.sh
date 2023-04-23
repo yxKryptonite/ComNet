@@ -21,4 +21,10 @@ mobile_mac:
 mmacs: 
   - 
   - 
+  - 
+
+# The following is the coordinates of the 3 WIFI detector (corresponding to the mMACs above)
+coordinates: 
+  - 
+  - 
   - " > config.yml

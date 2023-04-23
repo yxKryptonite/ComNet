@@ -2,3 +2,4 @@ pymysql
 pyyaml
 pynecone
 pandas
+matplotlib

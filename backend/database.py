@@ -2,7 +2,7 @@ import pymysql as mysql
 import yaml
 import datetime
 import re
-from localizer import Localizer
+from localizer import RealTimeLocalizer
 
 class MySQLDatabase():
     def __init__(self, args) -> None:
@@ -88,5 +88,5 @@ if __name__ == "__main__":
         except yaml.YAMLError as exc:
             print(exc)
     
-    database = MySQLDatabase(args)
-    database.create_table()
+    my_database = MySQLDatabase(args)
+    my_database.create_table()
