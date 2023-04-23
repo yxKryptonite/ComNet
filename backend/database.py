@@ -7,6 +7,9 @@ from localizer import RealTimeLocalizer
 class MySQLDatabase():
     def __init__(self, args) -> None:
         self.args = args
+        
+    def get_args(self):
+        return self.args
 
     def connect(self):
         self.db = mysql.connect(host=self.args['host'], user=self.args['user'], passwd=self.args['passwd'], db=self.args['db'])

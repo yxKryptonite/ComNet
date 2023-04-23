@@ -27,4 +27,7 @@ mmacs:
 coordinates: 
   - 
   - 
-  - " > config.yml
+  - 
+
+# The following is the room size in xy (in meters). e.g [10, 10]
+room_size: []" > config.yml
