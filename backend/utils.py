@@ -1,4 +1,5 @@
-import math
+import pandas as pd
+import matplotlib.pyplot as plt
 
 def trilateration(p1, p2, p3, r1, r2, r3):
     '''三点定位算法'''
@@ -24,22 +25,29 @@ def smooth_avg(xy_series, window_size=5):
     滑动平均算法
     xy_series: [(x1, y1), (x2, y2), ...]
     '''
-    new_xy_series = []
-    for idx in range(0, len(xy_series)):
-        if idx <= window_size:
-            window_size = idx
-        elif idx >= len(xy_series) - window_size:
-            window_size = len(xy_series) - idx - 1
-        
-        x = 0
-        y = 0
-        for i, xy in enumerate(xy_series[idx - window_size:idx + window_size + 1]):
-            x += xy[0]
-            y += xy[1]
-        x = x / (2 * window_size + 1)
-        y = y / (2 * window_size + 1)
-        new_xy_series.append((x, y))
-        
+    xy_series = pd.DataFrame(xy_series, columns=['x', 'y'])
+    x, y = xy_series['x'], xy_series['y']
+    new_x = x.rolling(window_size, min_periods=1).mean()
+    new_y = y.rolling(window_size, min_periods=1).mean()
+    new_xy_series = [(x, y) for x, y in zip(new_x, new_y)]
     return new_xy_series
 
 
+if __name__ == "__main__":
+    xy_series = []
+    POINT_NUM = 20
+    for i in range(POINT_NUM):
+        x = i
+        if i % 2 == 0:
+            y = 0
+        elif i % 4 == 3:
+            y = 10
+        else:
+            y = -5
+        xy_series.append((x, y))
+    print(xy_series)
+    new_xy_series = smooth_avg(xy_series, window_size=5)
+    print(new_xy_series)
+    plt.plot([xy[0] for xy in xy_series], [xy[1] for xy in xy_series], label='raw')
+    plt.plot([xy[0] for xy in new_xy_series], [xy[1] for xy in new_xy_series], label='smooth')
+    plt.show()

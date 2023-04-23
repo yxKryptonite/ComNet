@@ -46,7 +46,7 @@ class BaseLocalizer():
         mmacs = args['mmacs']
         
         placeholders = {mmacs[0]: None, mmacs[1]: None, mmacs[2]: None}
-        for idx, row in self.data.iterrows():
+        for _, row in self.data.iterrows():
             placeholders[row['MMAC']] = row['RNG']
             if None in placeholders.values():
                 continue
