@@ -3,6 +3,7 @@ import pandas as pd
 import yaml
 from matplotlib import pyplot as plt
 from matplotlib import patches
+import math
 
 class BaseLocalizer():
     def __init__(self, database):
@@ -47,7 +48,10 @@ class BaseLocalizer():
         
         placeholders = {mmacs[0]: None, mmacs[1]: None, mmacs[2]: None}
         for _, row in self.data.iterrows():
-            placeholders[row['MMAC']] = row['RNG']
+            range = row['RNG']
+            if range > math.sqrt(room_size[0] ** 2 + room_size[1] ** 2):
+                continue
+            placeholders[row['MMAC']] = range
             if None in placeholders.values():
                 continue
             else:
@@ -91,6 +95,18 @@ class RealTimeLocalizer(BaseLocalizer):
     
     def add_to_buffer(self, mmac, data):
         self.buffers[mmac] = self.buffers[mmac].append(data)
+        
+    def start_to_localize(self):
+        positions = [tuple(data) for data in self.args['coordinates']]
+        r1 = self.buffers[0][-1]
+        r2 = self.buffers[1][-1]
+        r3 = self.buffers[2][-1]
+        if len(r1)*len(r2)*len(r3) == 0:
+            return None
+        else:
+            pos = trilateration(positions[0], positions[1], positions[2], \
+                r1, r2, r3)
+        return pos
 
 
 # test
