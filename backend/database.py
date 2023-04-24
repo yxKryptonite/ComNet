@@ -3,10 +3,13 @@ import yaml
 import datetime
 import re
 from localizer import RealTimeLocalizer
+import pandas as pd
 
 class MySQLDatabase():
-    def __init__(self, args) -> None:
+    def __init__(self, args, mode='base') -> None:
         self.args = args
+        self.mode = mode
+        self.localizer = RealTimeLocalizer(args)
         
     def get_args(self):
         return self.args
@@ -66,6 +69,13 @@ class MySQLDatabase():
             self.cursor.execute(sql)
             self.db.commit()
             # TODO: add utility functions (may support real-time localization)
+            self.localizer.add_to_buffer(mmac, pd.DataFrame(datum['RNG']))
+            if self.mode == 'base':
+                pass
+            elif self.mode == 'realtime':
+                if self.localizer.start_to_localize():
+                    self.localizer.clear_buffer()
+                
         
         
     def query(self, sql):

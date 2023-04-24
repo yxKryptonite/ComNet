@@ -9,7 +9,7 @@ def main():
         except yaml.YAMLError as exc:
             print(exc)
         
-    my_database = MySQLDatabase(args)
+    my_database = MySQLDatabase(args, mode='realtime')
     my_database.connect()
     my_database.create_table(inplace=False)
     

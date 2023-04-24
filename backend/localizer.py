@@ -102,11 +102,23 @@ class RealTimeLocalizer(BaseLocalizer):
         r2 = self.buffers[1][-1]
         r3 = self.buffers[2][-1]
         if len(r1)*len(r2)*len(r3) == 0:
-            return None
+            return False
         else:
             pos = trilateration(positions[0], positions[1], positions[2], \
                 r1, r2, r3)
-        return pos
+            self.plot_trajectory(pos)
+            return True
+        
+    def plot_trajectory(self, pos):
+        room_size = self.args['room_size']
+        positions = [tuple(data) for data in self.args['coordinates']]
+        fig = plt.figure()
+        ax = fig.add_subplot(1,1,1)
+        ax.add_patch(patches.Rectangle((0, 0), room_size[0], room_size[1], color='blue', fill=False))
+        plt.scatter([xy[0] for xy in positions], \
+            [xy[1] for xy in positions], color='red')
+        plt.scatter(pos, '.', color='green')
+        plt.draw()
 
 
 # test
