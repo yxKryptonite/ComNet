@@ -1,4 +1,4 @@
-from utils import trilateration, smooth_avg
+from utils import trilateration, smooth_avg, rssi_to_dist, skeleton_constraint
 import pandas as pd
 import yaml
 from matplotlib import pyplot as plt
@@ -48,7 +48,8 @@ class BaseLocalizer():
         
         placeholders = {mmacs[0]: None, mmacs[1]: None, mmacs[2]: None}
         for _, row in self.data.iterrows():
-            range = row['RNG']
+            rssi = row['RSSI']
+            range = rssi_to_dist(rssi)
             if range > math.sqrt(room_size[0] ** 2 + room_size[1] ** 2):
                 continue
             placeholders[row['MMAC']] = range
@@ -64,6 +65,7 @@ class BaseLocalizer():
                     placeholders = {mmacs[0]: None, mmacs[1]: None, mmacs[2]: None}
                 
         trajectory = smooth_avg(trajectory)
+        trajectory = skeleton_constraint(trajectory, args['obstacle'])
         return positions, trajectory, room_size
         
     def plot_trajectory(self):
@@ -71,11 +73,14 @@ class BaseLocalizer():
         fig = plt.figure()
         ax = fig.add_subplot(1,1,1)
         ax.add_patch(patches.Rectangle((0, 0), room_size[0], room_size[1], color='blue', fill=False))
+        args = self.database.get_args()
+        for rec in args['obstacle']:
+            ax.add_patch(patches.Rectangle((rec[0], rec[2]), rec[1] - rec[0], rec[3] - rec[2], color='black', fill=False))
         plt.scatter([xy[0] for xy in positions], \
             [xy[1] for xy in positions], color='red')
         x = [xy[0] for xy in trajectory]
         y = [xy[1] for xy in trajectory]
-        plt.plot(x, y, color='green')
+        plt.plot(x, y, '-o', color='green', marker='o', markerfacecolor='yellow', markersize=4)
         plt.show()
 
 
