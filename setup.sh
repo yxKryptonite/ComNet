@@ -32,6 +32,12 @@ coordinates:
 # The following is the room size in xy (in meters). e.g [10, 10]
 room_size: []
 
-
 # The following is the size and location of obstacles in xy (in meters). e.g [1, 2, 3, 4] means [1, 2] * [3, 4]
-obstacle: []" > config.yml
+obstacle: []
+
+# The following is the ground truth trajectory of the mobile phone in xy (in meters). e.g. [1, 2], [3, 4] means [1, 2] -> [3, 4]
+ground_truth_trajectory: [
+  [],
+]
+
+" > config.yml
