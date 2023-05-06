@@ -20,18 +20,48 @@ def trilateration(p1, p2, p3, r1, r2, r3):
     return x, y
 
 
-def smooth_avg(xy_series, window_size=5):
+def smooth_avg(xy_series, window_size=6):
     '''
     滑动平均算法
     xy_series: [(x1, y1), (x2, y2), ...]
     '''
     xy_series = pd.DataFrame(xy_series, columns=['x', 'y'])
     x, y = xy_series['x'], xy_series['y']
+    #weights=[0.05, 0.05, 0.1, 0.2, 0.2, 0.2, 0.2]
+    #def weighted_mean(arr):
+    #    return sum(x * w for x, w in zip(arr, weights))
+    
+    #new_x = x.rolling(window_size, min_periods=1).apply(weighted_mean)
+    #new_y = y.rolling(window_size, min_periods=1).apply(weighted_mean)
     new_x = x.rolling(window_size, min_periods=1).mean()
     new_y = y.rolling(window_size, min_periods=1).mean()
     new_xy_series = [(x, y) for x, y in zip(new_x, new_y)]
     return new_xy_series
 
+def rssi_to_dist(rssi):
+    distance = 10 ** ((-38.5 - rssi) / (10 * 2.9))
+    return distance
+
+def inside(x, y, a, b, c, d):
+    if x >= a and x <= b and y >= c and y <= d:
+        return True
+    else:
+        return False
+
+def skeleton_constraint(trajectory, obstacle):
+    for i in range(1, len(trajectory)):
+        [cur_x, cur_y] = trajectory[i]
+        [pre_x, pre_y] = trajectory[i-1]
+        weight = [0.8, 0.6, 0.4, 0.2, 0.0]
+        for ob in obstacle:
+            if inside(cur_x, cur_y, ob[0], ob[1], ob[2], ob[3]):
+                for w in weight:
+                    [try_x, try_y] = [w * cur_x + (1-w) * pre_x, w * cur_y + (1-w) * pre_y]
+                    if not inside(try_x, try_y, ob[0], ob[1], ob[2], ob[3]):
+                        trajectory[i] = [try_x, try_y]
+                        break
+                break
+    return trajectory
 
 if __name__ == "__main__":
     xy_series = []

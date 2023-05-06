@@ -2,14 +2,14 @@ import pymysql as mysql
 import yaml
 import datetime
 import re
-from localizer import RealTimeLocalizer
+from localizer import BaseLocalizer
 import pandas as pd
 
 class MySQLDatabase():
     def __init__(self, args, mode='base') -> None:
         self.args = args
         self.mode = mode
-        self.localizer = RealTimeLocalizer(args)
+        self.localizer = BaseLocalizer(args)
         
     def get_args(self):
         return self.args

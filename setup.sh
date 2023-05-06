@@ -30,4 +30,8 @@ coordinates:
   - 
 
 # The following is the room size in xy (in meters). e.g [10, 10]
-room_size: []" > config.yml
+room_size: []
+
+
+# The following is the size and location of obstacles in xy (in meters). e.g [1, 2, 3, 4] means [1, 2] * [3, 4]
+obstacle: []" > config.yml
