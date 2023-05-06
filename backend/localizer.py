@@ -91,6 +91,9 @@ class BaseLocalizer():
         x = [xy[0] for xy in trajectory]
         y = [xy[1] for xy in trajectory]
         plt.plot(x, y, '-o', color='green', markerfacecolor='yellow', markersize=4)
+        ground_x = [xy[0] for xy in args['ground_truth_trajectory']]
+        ground_y = [xy[1] for xy in args['ground_truth_trajectory']]
+        plt.plot(ground_x, ground_y, color='orange')
         plt.show()
 
 
