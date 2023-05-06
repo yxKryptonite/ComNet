@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def trilateration(p1, p2, p3, r1, r2, r3):
+def triangulation(p1, p2, p3, r1, r2, r3):
     '''三点定位算法'''
     x1, y1 = p1
     x2, y2 = p2

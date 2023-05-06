@@ -1,4 +1,4 @@
-from utils import trilateration, smooth_avg, rssi_to_dist, skeleton_constraint
+from utils import triangulation, smooth_avg, rssi_to_dist, skeleton_constraint
 import pandas as pd
 import yaml
 from matplotlib import pyplot as plt
@@ -66,7 +66,7 @@ class BaseLocalizer():
             if None in placeholders.values():
                 continue
             else:
-                pos = trilateration(positions[0], \
+                pos = triangulation(positions[0], \
                         positions[1], positions[2], placeholders[mmacs[0]], \
                             placeholders[mmacs[1]], placeholders[mmacs[2]])
                 
