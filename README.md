@@ -11,7 +11,10 @@
 
 ```bash
 cd backend
+# data collection
 python main.py
+# data processing and visualization
+python localizer.py
 ```
 
 ## Frontend

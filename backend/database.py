@@ -6,10 +6,8 @@ from localizer import BaseLocalizer
 import pandas as pd
 
 class MySQLDatabase():
-    def __init__(self, args, mode='base') -> None:
+    def __init__(self, args) -> None:
         self.args = args
-        self.mode = mode
-        self.localizer = BaseLocalizer(args)
         
     def get_args(self):
         return self.args
@@ -68,15 +66,6 @@ class MySQLDatabase():
             self.log(f"Inserting data into {self.args['table']}: {sql}")
             self.cursor.execute(sql)
             self.db.commit()
-            # TODO: add utility functions (may support real-time localization)
-            self.localizer.add_to_buffer(mmac, pd.DataFrame(datum['RNG']))
-            if self.mode == 'base':
-                pass
-            elif self.mode == 'realtime':
-                if self.localizer.start_to_localize():
-                    self.localizer.clear_buffer()
-                
-        
         
     def query(self, sql):
         self.cursor.execute(sql)

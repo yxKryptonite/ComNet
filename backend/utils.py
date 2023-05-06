@@ -39,7 +39,7 @@ def smooth_avg(xy_series, window_size=6):
     return new_xy_series
 
 def rssi_to_dist(rssi):
-    distance = 10 ** ((-38.5 - rssi) / (10 * 2.9))
+    distance = 10 ** ((-38.5 - float(rssi)) / (10 * 2.9))
     return distance
 
 def inside(x, y, a, b, c, d):
@@ -48,11 +48,11 @@ def inside(x, y, a, b, c, d):
     else:
         return False
 
-def skeleton_constraint(trajectory, obstacle):
+def skeleton_constraint(trajectory, obstacle, weight=[0.8, 0.6, 0.4, 0.2, 0.0]):
     for i in range(1, len(trajectory)):
         [cur_x, cur_y] = trajectory[i]
         [pre_x, pre_y] = trajectory[i-1]
-        weight = [0.8, 0.6, 0.4, 0.2, 0.0]
+        
         for ob in obstacle:
             if inside(cur_x, cur_y, ob[0], ob[1], ob[2], ob[3]):
                 for w in weight:
@@ -63,6 +63,8 @@ def skeleton_constraint(trajectory, obstacle):
                 break
     return trajectory
 
+
+# test
 if __name__ == "__main__":
     xy_series = []
     POINT_NUM = 20

@@ -8,6 +8,10 @@ import math
 class BaseLocalizer():
     def __init__(self, database):
         self.database = database
+        try:
+            self.database.connect()
+        except Exception as e:
+            print(f"Fails to connect to database: {e}")
         self.data = pd.DataFrame()
         
     def set_data_from_database(self):
@@ -20,6 +24,12 @@ class BaseLocalizer():
         # for debugging, headless csv file
         self.data = pd.read_csv(path, sep=',', header=None, \
             names=['ID', 'MMAC', 'TIME', 'MAC', 'RNG', 'RSSI'])
+        
+    def filter_by_date(self, date: str):
+        '''
+        date format: "Fri Apr 21"
+        '''
+        self.data = self.data[self.data['TIME'].str.contains(date)]
         
     def get_length(self):
         return len(self.data)
@@ -49,10 +59,10 @@ class BaseLocalizer():
         placeholders = {mmacs[0]: None, mmacs[1]: None, mmacs[2]: None}
         for _, row in self.data.iterrows():
             rssi = row['RSSI']
-            range = rssi_to_dist(rssi)
-            if range > math.sqrt(room_size[0] ** 2 + room_size[1] ** 2):
+            dist = rssi_to_dist(rssi)
+            if dist > math.sqrt(room_size[0] ** 2 + room_size[1] ** 2):
                 continue
-            placeholders[row['MMAC']] = range
+            placeholders[row['MMAC']] = dist
             if None in placeholders.values():
                 continue
             else:
@@ -80,50 +90,8 @@ class BaseLocalizer():
             [xy[1] for xy in positions], color='red')
         x = [xy[0] for xy in trajectory]
         y = [xy[1] for xy in trajectory]
-        plt.plot(x, y, '-o', color='green', marker='o', markerfacecolor='yellow', markersize=4)
+        plt.plot(x, y, '-o', color='green', markerfacecolor='yellow', markersize=4)
         plt.show()
-
-
-class RealTimeLocalizer(BaseLocalizer):
-    def __init__(self, args) -> None:
-        super.__init__(self, None) # real-time localization does not need database
-        self.args = args
-        self.buffers = {self.args['mmacs'][0]: pd.DataFrame(), \
-            self.args['mmacs'][1]: pd.DataFrame(), self.args['mmacs'][2]: pd.DataFrame()}
-        
-    def clear_buffer(self):
-        self.buffers = {self.args['mmacs'][0]: pd.DataFrame(), \
-            self.args['mmacs'][1]: pd.DataFrame(), self.args['mmacs'][2]: pd.DataFrame()}
-    
-    def get_buffer(self):
-        return self.buffers
-    
-    def add_to_buffer(self, mmac, data):
-        self.buffers[mmac] = self.buffers[mmac].append(data)
-        
-    def start_to_localize(self):
-        positions = [tuple(data) for data in self.args['coordinates']]
-        r1 = self.buffers[0][-1]
-        r2 = self.buffers[1][-1]
-        r3 = self.buffers[2][-1]
-        if len(r1)*len(r2)*len(r3) == 0:
-            return False
-        else:
-            pos = trilateration(positions[0], positions[1], positions[2], \
-                r1, r2, r3)
-            self.plot_trajectory(pos)
-            return True
-        
-    def plot_trajectory(self, pos):
-        room_size = self.args['room_size']
-        positions = [tuple(data) for data in self.args['coordinates']]
-        fig = plt.figure()
-        ax = fig.add_subplot(1,1,1)
-        ax.add_patch(patches.Rectangle((0, 0), room_size[0], room_size[1], color='blue', fill=False))
-        plt.scatter([xy[0] for xy in positions], \
-            [xy[1] for xy in positions], color='red')
-        plt.scatter(pos, '.', color='green')
-        plt.draw()
 
 
 # test
@@ -138,5 +106,7 @@ if __name__ == "__main__":
     my_database = MySQLDatabase(args)
     my_localizer = BaseLocalizer(my_database)
     
-    my_localizer.set_data_from_csv('./0421-1.csv')
+    # my_localizer.set_data_from_database() # using database
+    my_localizer.set_data_from_csv('../example/0421.csv') # using example data
+    my_localizer.filter_by_date("Fri Apr 21") # filter data by date
     my_localizer.plot_trajectory()
