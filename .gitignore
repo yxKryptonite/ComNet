@@ -137,3 +137,4 @@ config.yml
 # data
 *.csv
 !0421.csv
+!example_data.csv
