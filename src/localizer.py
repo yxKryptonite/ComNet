@@ -100,7 +100,7 @@ class BaseLocalizer():
 # test
 if __name__ == "__main__":
     from database import MySQLDatabase
-    with open("../config.yml", 'r') as stream:
+    with open("../example/example_config.yml", 'r') as stream:
         try:
             args = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
@@ -110,6 +110,6 @@ if __name__ == "__main__":
     my_localizer = BaseLocalizer(my_database)
     
     # my_localizer.set_data_from_database() # using database
-    my_localizer.set_data_from_csv('../example/0421.csv') # using example data
+    my_localizer.set_data_from_csv('../example/example_data.csv') # using example data
     my_localizer.filter_by_date("Fri Apr 21") # filter data by date
     my_localizer.plot_trajectory()
