@@ -27,12 +27,6 @@ def smooth_avg(xy_series, window_size=6):
     '''
     xy_series = pd.DataFrame(xy_series, columns=['x', 'y'])
     x, y = xy_series['x'], xy_series['y']
-    #weights=[0.05, 0.05, 0.1, 0.2, 0.2, 0.2, 0.2]
-    #def weighted_mean(arr):
-    #    return sum(x * w for x, w in zip(arr, weights))
-    
-    #new_x = x.rolling(window_size, min_periods=1).apply(weighted_mean)
-    #new_y = y.rolling(window_size, min_periods=1).apply(weighted_mean)
     new_x = x.rolling(window_size, min_periods=1).mean()
     new_y = y.rolling(window_size, min_periods=1).mean()
     new_xy_series = [(x, y) for x, y in zip(new_x, new_y)]
