@@ -130,3 +130,9 @@ dmypy.json
 
 # misc
 .DS_Store
+
+# data
+*.csv
+
+# config
+config.yml
