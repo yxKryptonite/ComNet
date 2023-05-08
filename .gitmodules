@@ -1,0 +1,6 @@
+[submodule "src/AlphaRTC"]
+	path = src/AlphaRTC
+	url = https://github.com/OpenNetLab/AlphaRTC
+[submodule "src/vmaf"]
+	path = src/vmaf
+	url = https://github.com/Netflix/vmaf
