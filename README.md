@@ -1,2 +1,1 @@
-# ComNet
-Labs for Computer Networks (Honor Track), Spring 2023
+# Lab2: AlphaRTC Video Quality Evaluation
