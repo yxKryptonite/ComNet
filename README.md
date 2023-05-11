@@ -17,14 +17,15 @@
     git clone git@github.com:Netflix/vmaf.git
     ```
 
-3. Change line 18, 19 of `AlphaRTC/dockers/Dockerfile.compile` to your own proxy port
+3. Change line 18, 19 of `AlphaRTC/dockers/Dockerfile.compile` to [your own proxy port](https://github.com/alanhg/others-note/issues/503)
 
     ```Dockerfile
+    # in `AlphaRTC/dockers/Dockerfile.compile`
     ENV HTTP_PROXY "http://127.0.0.1:<your_proxy_port>"
     ENV HTTPS_PROXY "http://127.0.0.1:<your_proxy_port>"
     ```
 
-    and then compile AlphaRTC
+    and then compile AlphaRTC (about 10min+)
 
     ```bash
     cd AlphaRTC
