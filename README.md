@@ -34,34 +34,24 @@
 
 4. `cd examples/peerconnection/serverless/corpus`
 
-5. Modify config json files as you wish
-
-6. Create `config_files` directory and put your config files into it
-
-7. Mount your config files into docker
-
-    ``` shell
-    sudo docker run -v config_files:/app/config_files alphartc peerconnection_serverless /app/config_files/config.json
-    ```
-
-8. Run demo
+5. Run demo
 
     PyInfer:
     ```shell
-    sudo docker run -d --rm -v `pwd`/examples/peerconnection/serverless/corpus:/app -w /app --name alphartc alphartc peerconnection_serverless receiver_pyinfer.json
-    sudo docker exec alphartc peerconnection_serverless sender_pyinfer.json
+    docker run -d --rm -v `pwd`/examples/peerconnection/serverless/corpus:/app -w /app --name alphartc alphartc peerconnection_serverless receiver_pyinfer.json
+    docker exec alphartc peerconnection_serverless sender_pyinfer.json
     ```
 
     ONNXInfer:
-    ``` shell
-    sudo docker run -d --rm -v `pwd`/examples/peerconnection/serverless/corpus:/app -w /app --name alphartc alphartc peerconnection_serverless receiver.json
-    sudo docker exec alphartc peerconnection_serverless sender.json
+    ```shell
+    docker run -d --rm -v `pwd`/examples/peerconnection/serverless/corpus:/app -w /app --name alphartc alphartc peerconnection_serverless receiver.json
+    docker exec alphartc peerconnection_serverless sender.json
     ```
 
-9.  Compile [vmaf](https://github.com/Netflix/vmaf)
+6.  Compile [vmaf](https://github.com/Netflix/vmaf)
 
     See [here](https://github.com/Netflix/vmaf/blob/master/libvmaf/README.md).
 
-10. **(TODO)** Use vmaf to evaluate
+7.  **(TODO)** Use vmaf to evaluate
 
 ## Report
