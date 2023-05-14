@@ -50,8 +50,12 @@
 
 6.  Compile [vmaf](https://github.com/Netflix/vmaf)
 
-    See [here](https://github.com/Netflix/vmaf/blob/master/libvmaf/README.md).
+    See [here](https://github.com/Netflix/vmaf/blob/master/libvmaf/README.md) for compilation.
 
-7.  **(TODO)** Use vmaf to evaluate
+7.  Use vmaf to evaluate
+
+    See [here](https://github.com/Netflix/vmaf/blob/master/libvmaf/tools/README.md) for vmaf docs.
+
+    **TODO**
 
 ## Report
