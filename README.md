@@ -1,4 +1,4 @@
-# Lab2: AlphaRTC Video Quality Evaluation
+# Lab2: AlphaRTC Video Transmission and Quality Evaluation
 
 ## Usage
 
@@ -81,5 +81,11 @@
     ```
 
     And you'll get the vmaf score and a `result.xml` file.
+
+8. Evaluation
+
+    Replace `webrtc.log` and `result.xml` file in `src/eval/assets` with yours.
+
+    ***TODO***
 
 ## Report
