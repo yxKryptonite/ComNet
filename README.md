@@ -32,17 +32,31 @@
     make all
     ```
 
-4. `cd examples/peerconnection/serverless/corpus`
+4. Modify config files
+
+    See [here](https://github.com/yxKryptonite/AlphaRTC#configurations-for-peerconnection_serverless) for details.
+
+    PyInfer:
+
+    - `examples/peerconnection/serverless/receiver_pyinfer.json`
+    - `examples/peerconnection/serverless/sender_pyinfer.json`
+
+    ONNXInfer:
+
+    - `examples/peerconnection/serverless/receiver.json`
+    - `examples/peerconnection/serverless/sender.json`
 
 5. Run demo
 
     PyInfer:
+
     ```shell
     docker run -d --rm -v `pwd`/examples/peerconnection/serverless/corpus:/app -w /app --name alphartc alphartc peerconnection_serverless receiver_pyinfer.json
     docker exec alphartc peerconnection_serverless sender_pyinfer.json
     ```
 
     ONNXInfer:
+
     ```shell
     docker run -d --rm -v `pwd`/examples/peerconnection/serverless/corpus:/app -w /app --name alphartc alphartc peerconnection_serverless receiver.json
     docker exec alphartc peerconnection_serverless sender.json
