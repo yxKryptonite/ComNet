@@ -70,6 +70,16 @@
 
     See [here](https://github.com/Netflix/vmaf/blob/master/libvmaf/tools/README.md) for vmaf docs.
 
-    **TODO**
+    ```bash
+    vmaf \
+        --reference testmedia/cxk_1.yuv \
+        --distorted output/cxk_1_rtc.yuv \
+        --width 1280 --height 720 --pixel_format 420 --bitdepth 8 \
+        --model version=vmaf_v0.6.1 \
+        --feature psnr \
+        --output result.xml
+    ```
+
+    And you'll get the vmaf score and a `result.xml` file.
 
 ## Report
