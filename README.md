@@ -77,15 +77,22 @@
         --width 1280 --height 720 --pixel_format 420 --bitdepth 8 \
         --model version=vmaf_v0.6.1 \
         --feature psnr \
-        --output result.xml
+        --json --output vmaf.json
     ```
 
-    And you'll get the vmaf score and a `result.xml` file.
+    And you'll get the vmaf score and a `vmaf.json` file.
 
 8. Evaluation
 
-    Replace `webrtc.log` and `result.xml` file in `src/eval/assets` with yours.
+    Replace `webrtc.log` and `vmaf.json` file in `src/eval/assets` with yours.
 
-    ***TODO***
+    ```bash
+    cd src/eval
+    pip install -r requirements.txt
+    # evaluate packet loss and throughput
+    python eval_rtc.py
+    # evaluate video quality
+    python eval_vmaf.py
+    ```
 
 ## Report
