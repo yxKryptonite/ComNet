@@ -1,7 +1,7 @@
 import json
 import matplotlib.pyplot as plt
 
-with open("assets/vmaf.json") as f:
+with open("assets/vmaf.json", "r") as f:
     result = json.load(f)
   
 plt.figure(figsize=(10, 5))  
