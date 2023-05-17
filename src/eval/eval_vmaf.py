@@ -14,6 +14,8 @@ for i, key in enumerate(keys):
     plt.plot(x, y[i], label=key)
     
 plt.title("vmaf evaluation")
+plt.xlabel("Frame")
+plt.ylabel("Metrics")
 plt.legend(keys, bbox_to_anchor=(0.85, 1), loc=2, borderaxespad=0)
         
 # show and save
