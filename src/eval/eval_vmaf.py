@@ -1,7 +1,12 @@
 import json
 import matplotlib.pyplot as plt
+import configargparse
 
-with open("assets/vmaf.json", "r") as f:
+parser = configargparse.ArgParser()
+parser.add_argument('-i', '--input', default='assets/vmaf.json')
+args = parser.parse_args()
+
+with open(args.input, "r") as f:
     result = json.load(f)
   
 plt.figure(figsize=(10, 5))  
@@ -19,5 +24,6 @@ plt.ylabel("Metrics")
 plt.legend(keys, bbox_to_anchor=(0.85, 1), loc=2, borderaxespad=0)
         
 # show and save
+output_name = args.input.split("/")[-1].split(".")[0]
 plt.show()
-plt.savefig('assets/vmaf.png')
+plt.savefig(f'assets/vmaf_{output_name}.png')

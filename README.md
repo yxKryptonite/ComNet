@@ -17,7 +17,7 @@
     git clone git@github.com:Netflix/vmaf.git
     ```
 
-3. Change line 18, 19 of `AlphaRTC/dockers/Dockerfile.compile` to [your own proxy port](https://github.com/alanhg/others-note/issues/503)
+3. **(Optional)** Change line 18, 19 of `AlphaRTC/dockers/Dockerfile.compile` to [your own proxy port](https://github.com/alanhg/others-note/issues/503)
 
     ```Dockerfile
     # in `AlphaRTC/dockers/Dockerfile.compile`
@@ -46,7 +46,7 @@
     - `examples/peerconnection/serverless/receiver.json`
     - `examples/peerconnection/serverless/sender.json`
 
-5. Run demo
+5. Run demo (in `src/AlphaRTC/`)
 
     PyInfer:
 
@@ -72,11 +72,12 @@
 
     ```bash
     vmaf \
-        --reference testmedia/cxk_1.yuv \
-        --distorted output/cxk_1_rtc.yuv \
-        --width 1280 --height 720 --pixel_format 420 --bitdepth 8 \
+        --reference <inputfilename.yuv> \
+        --distorted <outputfilename.yuv> \
+        --width <width> --height <height> \
+        --pixel_format <usually 420> --bitdepth <usually 8> \
         --model version=vmaf_v0.6.1 \
-        --feature psnr \
+        --feature psnr \ # you can add other features here
         --json --output vmaf.json
     ```
 
@@ -84,15 +85,13 @@
 
 8. Evaluation
 
-    Replace `webrtc.log` and `vmaf.json` file in `src/eval/assets` with yours.
-
     ```bash
     cd src/eval
     pip install -r requirements.txt
     # evaluate packet loss and throughput
-    python eval_rtc.py
+    python eval_rtc.py -i <webrtc.log>
     # evaluate video quality
-    python eval_vmaf.py
+    python eval_vmaf.py -i <vmaf.json>
     ```
 
 ## Report

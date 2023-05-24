@@ -18,7 +18,7 @@ with open(args.input, mode="r", encoding="utf-8-sig") as f:
     while(True):
         text_line = f.readline()
         if(text_line):
-            if(text_line.startswith("(remote_estimator_proxy.cc:147):") == False):
+            if(text_line.startswith("(remote_estimator_proxy.cc:151):") == False):
                 continue
             json_data = json.loads(text_line[33:])
             arrivalTimeMs = json_data["packetInfo"]["arrivalTimeMs"]
