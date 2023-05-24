@@ -96,4 +96,12 @@
     python eval_vmaf.py -i <vmaf.json>
     ```
 
+9. You may also want to post-process the output video if you encountered the video offset problem. The steps are:
+   1.  Turn both `.mp4` into a series of `.jpeg`
+   2.  Set two series to the same number of frames
+   3.  Find the offset frame and align the two series
+   4.  Turn image series back into `.mp4` and recompute vmaf metrics
+
+    You can see our output result at `videos/`.
+
 ## Report
