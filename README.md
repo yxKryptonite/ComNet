@@ -104,4 +104,10 @@
 
     You can see our output result at `videos/`.
 
+10. **(Advanced)** Try to transmit videos between different IPs.
+
+    See [here](docs/transmit-different-ips.txt) for details.
+
 ## Report
+
+See [report.md](docs/report.md)

@@ -1,0 +1,18 @@
+Advanced: transmit videos between different IPs
+
+By 潘重阳
+
+实验环境：
+windows11+VMware® Workstation 16 Pro，以NAT模式同时运行两个Ubuntu 18.04.6 LTS虚拟机.两个虚拟机的镜像是完全相同/复制而来的。
+NAT模式下，虚拟NAT设备与虚拟DHCP服务器一起连接在虚拟交换机上，两台虚拟机共享同一网段。
+实验方法：
+1.分别查看两台虚拟机分配到的ip地址，实验时receiver ip为192.168.160.140，sender ip为192.168.160.139
+2.配置sender的json，修改dest ip；dest port设置为8000。receiver的json设置为监听0.0.0.0，8000端口
+3.启动两台虚拟机的container：
+sudo docker run --privileged --network=host -d --rm -v `pwd`/examples/peerconnection/serverless/corpus:/app -w /app --name alphartc alphartc /bin/bash -c "while true; do sleep 1000; done"
+4.先后启动两台虚拟机的传输进程
+receiver:
+sudo docker exec --privileged alphartc peerconnection_serverless receiver_pyinfer.json 
+sender:
+sudo docker exec --privileged alphartc peerconnection_serverless sender_pyinfer.json 
+5.视频传输并完成，保存log以供分析。
