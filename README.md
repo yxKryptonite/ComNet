@@ -66,7 +66,7 @@
 
     See [here](https://github.com/Netflix/vmaf/blob/master/libvmaf/README.md) for compilation.
 
-7.  Use vmaf to evaluate
+7.  Use vmaf to compute metrics
 
     See [here](https://github.com/Netflix/vmaf/blob/master/libvmaf/tools/README.md) for vmaf docs.
 
@@ -81,9 +81,11 @@
         --json --output vmaf.json
     ```
 
-    And you'll get the vmaf score and a `vmaf.json` file.
+    And you'll get the overall vmaf score and a `vmaf.json` file.
 
-8. Evaluation
+8. Evaluation of throughput, loss rate and vmaf metrics
+
+    Put the `webrtc.log` and `vmaf.json` in `src/eval/assets/` and run
 
     ```bash
     cd src/eval
