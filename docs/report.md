@@ -35,33 +35,34 @@
 
 1. 拉取 AlphaRTC 的 docker 镜像
 
-  ```bash
-  docker pull opennetlab.azurecr.io/alphartc
-  docker image tag opennetlab.azurecr.io/alphartc alphartc
-  ```
+    ```bash
+    docker pull opennetlab.azurecr.io/alphartc
+    docker image tag opennetlab.azurecr.io/alphartc alphartc
+    ```
 
 2. 克隆 AlphaRTC 和 vmaf，这里使用的是为了解决安装时的网络问题而自行修改过的 AlphaRTC 仓库
 
-  ```bash
-  cd src
-  git clone git@github.com:yxKryptonite/AlphaRTC.git # my version of AlphaRTC
-  git clone git@github.com:Netflix/vmaf.git
-  ```
+    ```bash
+    cd src
+    git clone git@github.com:yxKryptonite/AlphaRTC.git # my version of AlphaRTC
+    git clone git@github.com:Netflix/vmaf.git
+    ```
 
-3. **(可选)** 修改 `AlphaRTC/dockers/Dockerfile.compile` ，配置代理环境变量，此处 `<your_proxy_port>` 为主机代理端口
+3. **(可选)** 编译 AlphaRTC
+   1. 修改 `AlphaRTC/dockers/Dockerfile.compile` ，配置代理环境变量，此处 `<your_proxy_port>` 为主机代理端口
 
-  ```bash
-  # in `AlphaRTC/dockers/Dockerfile.compile`
-  ENV HTTP_PROXY "http://127.0.0.1:<your_proxy_port>"
-  ENV HTTPS_PROXY "http://127.0.0.1:<your_proxy_port>"
-  ```
+      ```bash
+      # in `AlphaRTC/dockers/Dockerfile.compile`
+      ENV HTTP_PROXY "http://127.0.0.1:<your_proxy_port>"
+      ENV HTTPS_PROXY "http://127.0.0.1:<your_proxy_port>"
+      ```
 
-  最后编译 AlphaRTC
+    2. 开始编译
 
-  ```bash
-  cd AlphaRTC
-  make all
-  ```
+        ```bash
+        cd AlphaRTC
+        make all
+        ```
 
 ### 2.2 安装 vmaf
 
@@ -71,20 +72,20 @@
 
 1. 安装需要的工具
 
-```bash
-python3 -m pip install virtualenv
-python3 -m virtualenv .venv
-source .venv/bin/activate
-pip install meson
-sudo [package-manager] install nasm ninja-build doxygen xxd
-```
+    ```bash
+    python3 -m pip install virtualenv
+    python3 -m virtualenv .venv
+    source .venv/bin/activate
+    pip install meson
+    sudo [package-manager] install nasm ninja-build doxygen xxd
+    ```
 
 2. 编译 vmaf 
 
-```bash
-meson build --buildtype release
-ninja -vC build
-```
+    ```bash
+    meson build --buildtype release
+    ninja -vC build
+    ```
 
 ## 3. 视频传输
 
@@ -101,26 +102,26 @@ AlphaRTC 在 `examples/peerconnection/serverless/corpus` 目录下提供了单�
 1. 将 cxk.mp4 文件传到 `corpus/testmedia/` 中
 2. 用 ffmpeg 将 mp4 文件转化为 yuv 文件
 
-```bash
-ffmpeg -i cxk.mp4 cxk.yuv
-```
+    ```bash
+    ffmpeg -i cxk.mp4 cxk.yuv
+    ```
 
-3. 修改配置文件 `receiver_pyinfer.json` 和 `sender_pyinfer.json` ，保持 IP 地址为 0.0.0.0 和目标/监听端口为 8000 不变，修改 `width` ， `height` ， `fps` 和 `autoclose` 字段为被传输视频的宽、高、帧率、时长，修改 `file_path` 字段为相应的被传文件/输出文件路径。
+3. 修改配置文件 `receiver_pyinfer.json` 和 `sender_pyinfer.json` ，保持 IP 地址为 0.0.0.0 和目标/监听端口为 8000 不变，修改 `width`, `height`, `fps` 和 `autoclose` 字段为被传输视频的宽、高、帧率、时长，修改 `file_path` 字段为相应的被传文件/输出文件路径。
 
-   本实验中，以上的字段分别为：`width = 1280, height = 720, fps = 25, autoclose = 60` ，输入视频的 `file_path = testmedia/cxk.yuv` ，输出视频的 `file_path = outvideo.yuv` 
+   本实验中，以上的字段分别为：`width = 1280, height = 720, fps = 25, autoclose = 60`, 输入视频的 `file_path = testmedia/cxk.yuv`, 输出视频的 `file_path = outvideo.yuv` 
 
 4. 启动容器，并运行传输进程（这一步在 `src/AlphaRTC` 目录下进行），在这一步我们可以同时获得 `webrtc.log` 日志文件以便于之后分析
 
-```bash
-docker run -d --rm -v `pwd`/examples/peerconnection/serverless/corpus:/app -w /app --name alphartc alphartc peerconnection_serverless receiver_pyinfer.json
-docker exec alphartc peerconnection_serverless sender_pyinfer.json
-```
+    ```bash
+    docker run -d --rm -v `pwd`/examples/peerconnection/serverless/corpus:/app -w /app --name alphartc alphartc peerconnection_serverless receiver_pyinfer.json
+    docker exec alphartc peerconnection_serverless sender_pyinfer.json
+    ```
 
 5. **(可选)** 将传输得到的视频转化回 mp4 格式，查看传输效果。
 
-```bash
-ffmpeg -i outvideo.yuv outvideo.mp4
-```
+    ```bash
+    ffmpeg -i outvideo.yuv outvideo.mp4
+    ```
 
 ### 3.2 不同 IP 的两台虚拟机作为发送端和接收端
 
@@ -130,29 +131,29 @@ ffmpeg -i outvideo.yuv outvideo.mp4
 
 #### 3.2.2 实验过程
 
-1. 我们首先查看了两台虚拟机分配到的IP地址，实验时接收者（receiver）的 IP 为 192.168.160.140，发送者（sender）的 IP 为 192.168.160.139 。
+1. 我们首先查看了两台虚拟机分配到的IP地址，实验时接收者（receiver）的 IP 为 192.168.160.140，发送者（sender）的 IP 为 192.168.160.139。
 
-2. 接着，我们配置了发送者的 config json，修改了目标 IP ，并将目标端口设置为8000。同时，我们也配置了接收者的config json，设置其监听0.0.0.0，8000端口。
+2. 接着，我们配置了发送者的 config json，修改了目标 IP ，并将目标端口设置为8000。同时，我们也配置了接收者的config json，设置其监听0.0.0.0, 8000端口。
 
 3. 在完成了以上步骤后，我们启动了两台虚拟机的container：
 
-  ```bash
-  sudo docker run --privileged --network=host -d --rm -v `pwd`/examples/peerconnection/serverless/corpus:/app -w /app --name alphartc alphartc /bin/bash -c "while true; do sleep 1000; done"
-  ```
+    ```bash
+    sudo docker run --privileged --network=host -d --rm -v `pwd`/examples/peerconnection/serverless/corpus:/app -w /app --name alphartc alphartc /bin/bash -c "while true; do sleep 1000; done"
+    ```
 
 4. 最后，我们分别启动了两台虚拟机的传输进程：
    
-  receiver:
+     - receiver:
 
-  ```bash
-  sudo docker exec --privileged alphartc peerconnection_serverless receiver_pyinfer.json
-  ```
+       ```bash
+       sudo docker exec --privileged alphartc peerconnection_serverless receiver_pyinfer.json
+       ```
 
-  ​sender:
+     - ​sender:
 
-  ```bash
-  sudo docker exec --privileged alphartc peerconnection_serverless sender_pyinfer.json
-  ```
+       ```bash
+       sudo docker exec --privileged alphartc peerconnection_serverless sender_pyinfer.json
+       ```
 
 5. 传输结束后，收集源视频和传输后视频，receiver 和 sender 的 config 文件以及 receiver 和 sender 的传输日志进行分析。
 
@@ -164,7 +165,7 @@ ffmpeg -i outvideo.yuv outvideo.mp4
 
 ### 4.1 计算公式
 
-在 `webrtc.log` 文件中，在每一个 packet 的日志中，都有 `arrivalTimeMs` ， `payloadSize` 和 `lossRates` 这三个字段，分别表示每个包的到达时间戳（单位为毫秒）、荷载大小以及丢包率。相邻两个包的 `arrivalTimeMs` 作差得到 `delta_arrivalTimeMs` 即可以视作一个包的传输时间。将 `delta_arrivalTimeMs` ，`payloadSize` 和  `lossRates` 累加的就得到 `total_time_ms` ， `total_payload` 和 `total_loss` ，再用 `total_count` 记录包的个数。
+在 `webrtc.log` 文件中，在每一个 packet 的日志中，都有 `arrivalTimeMs`, `payloadSize` 和 `lossRates` 这三个字段，分别表示每个包的到达时间戳（单位为毫秒）、荷载大小以及丢包率。相邻两个包的 `arrivalTimeMs` 作差得到 `delta_arrivalTimeMs` 即可以视作一个包的传输时间。将 `delta_arrivalTimeMs`, `payloadSize` 和  `lossRates` 累加的就得到 `total_time_ms`,  `total_payload` 和 `total_loss`, 再用 `total_count` 记录包的个数。
 
 然后用 `throughtput = total_payload / total_time_ms * 1000 ` 计算吞吐量（单位 bps），
 
